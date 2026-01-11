@@ -173,6 +173,38 @@ const openWidget = (url) => {
                         </div>
                     </div>
                 </GlassCard>
+
+                <!-- Live Widget Preview -->
+                <GlassCard title="Live Preview">
+                    <div class="relative">
+                        <div class="absolute top-0 right-0 flex items-center gap-2">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-1.5 animate-pulse"></span>
+                                Live
+                            </span>
+                            <button 
+                                @click="openWidget(widgetUrl)" 
+                                class="text-gray-500 hover:text-indigo-600 transition-colors p-1.5 rounded-lg hover:bg-gray-100"
+                                title="Open in new tab"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </button>
+                        </div>
+                        <div class="bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl p-4 mt-8">
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                                <iframe 
+                                    :src="widgetUrl" 
+                                    class="w-full h-[600px] border-0"
+                                    title="Chatbot Widget Preview"
+                                    allow="clipboard-write"
+                                ></iframe>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-xs text-gray-500 text-center">
+                            This is a live preview of your chatbot widget. Try sending a message!
+                        </p>
+                    </div>
+                </GlassCard>
             </div>
         </div>
     </AuthenticatedLayout>
