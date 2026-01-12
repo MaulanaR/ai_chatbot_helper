@@ -95,6 +95,22 @@ class ChatWidgetController extends Controller
     }
 
     /**
+     * Display the floating chat bubble widget for the specified chatbot UUID.
+     */
+    public function showBubble($uuid)
+    {
+        $chatbot = Chatbot::where('uuid', $uuid)->firstOrFail();
+
+        return Inertia::render('Widget/ChatBubble', [
+            'chatbot' => [
+                'name' => $chatbot->name,
+                'uuid' => $chatbot->uuid,
+                'systemPrompt' => $chatbot->system_prompt
+            ]
+        ])->rootView('widget');
+    }
+
+    /**
      * Get chatbot info for the widget.
      */
     public function info($uuid): JsonResponse

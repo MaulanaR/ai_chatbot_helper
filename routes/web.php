@@ -22,6 +22,7 @@ use Inertia\Inertia;
 
 // Public widget routes
 Route::get('/widget/{uuid}', [ChatWidgetController::class, 'show'])->name('widget.show');
+Route::get('/widget/{uuid}/bubble', [ChatWidgetController::class, 'showBubble'])->name('widget.bubble');
 Route::post('/widget/{uuid}/send', [ChatWidgetController::class, 'sendMessage'])->name('widget.send');
 Route::get('/widget/{uuid}/info', [ChatWidgetController::class, 'info'])->name('widget.info');
 
@@ -71,5 +72,6 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => \Illuminate\Foundation\Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'widgetBubbleUrl' => route('widget.bubble', 'da1286e2-c654-4986-a74d-bb4cc6567f07'),
     ]);
 });

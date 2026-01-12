@@ -120,6 +120,7 @@ class ChatbotController extends Controller
             'chatbot' => $chatbot,
             'embedCode' => $chatbot->embed_code,
             'widgetUrl' => route('widget.show', $chatbot->uuid),
+            'widgetBubbleUrl' => route('widget.bubble', $chatbot->uuid),
         ]);
     }
 

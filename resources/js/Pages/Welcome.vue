@@ -19,6 +19,10 @@ defineProps({
         type: String,
         required: true,
     },
+    widgetBubbleUrl: {
+        type: String,
+        required: true,
+    },
 });
 
 const features = [
@@ -261,6 +265,12 @@ const features = [
 
             <!-- Footer -->
             <footer class="bg-gray-50 border-t border-gray-200">
+                <iframe
+                    :src="widgetBubbleUrl"
+                    class="fixed bottom-6 right-6 z-50 border-0 shadow-none"
+                    style="width: 400px; height: 600px; max-height: 85vh; max-width: 90vw;"
+                    allowtransparency="true"
+                ></iframe>
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div class="md:flex md:items-center md:justify-between">
                         <div class="flex justify-center space-x-6 md:order-2">
