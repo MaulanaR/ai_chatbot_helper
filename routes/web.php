@@ -72,6 +72,6 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => \Illuminate\Foundation\Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        'widgetBubbleUrl' => route('widget.bubble', 'da1286e2-c654-4986-a74d-bb4cc6567f07'),
+        'widgetBubbleUrl' => route('widget.bubble', '8dc54a8d-8843-4942-a20b-96b0c4e89bfb'),
     ]);
 });

@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { ref, inject } from 'vue';
 
 const route = inject('route');
+const currentYear = ref(new Date().getFullYear());
 
 defineProps({
     canLogin: {
@@ -126,7 +127,7 @@ const features = [
                     </div>
 
                     <!-- Hero Image / Preview -->
-                    <div class="mt-20 relative mx-auto max-w-5xl">
+                    <div class="mt-20 relative mx-auto max-w-5xl ">
                         <div class="rounded-3xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-4xl lg:p-4">
                             <div class="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
                                 <div class="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-gray-50/50">
@@ -289,7 +290,7 @@ const features = [
                         </div>
                         <div class="mt-8 md:mt-0 md:order-1">
                             <p class="text-center text-base text-gray-400">
-                                &copy; 2024 ChatBot SaaS. All rights reserved.
+                                &copy; {{currentYear}} ChatBot SaaS. All rights reserved.
                             </p>
                         </div>
                     </div>
