@@ -7,6 +7,7 @@ use App\Models\KnowledgeBase;
 use App\Services\PdfParserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ChatbotController extends Controller
@@ -148,11 +149,55 @@ class ChatbotController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'system_prompt' => 'nullable|string',
+            'deleted_knowledge_ids' => 'nullable|array',
+            'deleted_knowledge_ids.*' => 'exists:knowledge_bases,id',
+            'new_knowledge_type' => 'nullable|in:text,pdf',
+            'new_knowledge_content' => 'required_if:new_knowledge_type,text|nullable|string',
+            'new_knowledge_pdf' => 'required_if:new_knowledge_type,pdf|nullable|file|mimes:pdf|max:10240',
         ]);
 
-        $chatbot->update($validated);
+        // Update core fields
+        $chatbot->update([
+            'name' => $validated['name'],
+            'system_prompt' => $validated['system_prompt'],
+        ]);
 
-        return redirect()->route('chatbots.index')
+        // Handle deletions
+        if (!empty($validated['deleted_knowledge_ids'])) {
+            $knowledgeBases = KnowledgeBase::whereIn('id', $validated['deleted_knowledge_ids'])
+                ->where('chatbot_id', $chatbot->id)
+                ->get();
+
+            foreach ($knowledgeBases as $kb) {
+                if ($kb->type === 'pdf' && $kb->file_path) {
+                    Storage::disk('public')->delete($kb->file_path);
+                }
+                $kb->delete();
+            }
+        }
+
+        // Handle addition of new knowledge
+        if (!empty($validated['new_knowledge_type'])) {
+            $content = '';
+            $filePath = null;
+
+            if ($validated['new_knowledge_type'] === 'text') {
+                $content = $validated['new_knowledge_content'];
+            } elseif ($validated['new_knowledge_type'] === 'pdf' && $request->hasFile('new_knowledge_pdf')) {
+                $content = $this->pdfParser->extract($request->file('new_knowledge_pdf'));
+                $filePath = $request->file('new_knowledge_pdf')->store('pdfs', 'public');
+            }
+
+            if ($content) {
+                $chatbot->knowledgeBases()->create([
+                    'type' => $validated['new_knowledge_type'],
+                    'content' => $content,
+                    'file_path' => $filePath,
+                ]);
+            }
+        }
+
+        return redirect()->route('chatbots.show', $chatbot->id)
             ->with('success', 'Chatbot berhasil diperbarui!');
     }
 
