@@ -276,7 +276,7 @@ onMounted(() => {
         0 4px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    overflow: hidden;
+    /* Removed overflow: hidden to allow the badge to be visible */
 }
 
 .floating-btn::before {
@@ -286,6 +286,7 @@ onMounted(() => {
     background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
+    border-radius: 50%;
 }
 
 .floating-btn:hover {
