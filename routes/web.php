@@ -1,5 +1,6 @@
 <?php 
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ChatbotController;
@@ -56,7 +57,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/chatbots/{chatbot}', [ChatbotController::class, 'show'])->name('chatbots.show');
     Route::get('/chatbots/{chatbot}/edit', [ChatbotController::class, 'edit'])->name('chatbots.edit');
     Route::patch('/chatbots/{chatbot}', [ChatbotController::class, 'update'])->name('chatbots.update');
+    Route::get('/chatbots/{chatbot}/analytics', [ChatbotController::class, 'analytics'])->name('chatbots.analytics');
     Route::delete('/chatbots/{chatbot}', [ChatbotController::class, 'destroy'])->name('chatbots.destroy');
+
+    // Analytics routes
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 });
 
 // Root route

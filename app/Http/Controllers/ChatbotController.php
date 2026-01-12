@@ -167,4 +167,60 @@ class ChatbotController extends Controller
         return redirect()->route('chatbots.index')
             ->with('success', 'Chatbot berhasil dihapus!');
     }
+
+    /**
+     * Display analytics for the specified chatbot.
+     */
+    public function analytics(Chatbot $chatbot)
+    {
+        $this->authorize('view', $chatbot);
+
+        // Get statistics
+        $totalSessions = $chatbot->chatSessions()->count();
+        $totalMessages = $chatbot->chatMessages()->count();
+        $userMessages = $chatbot->chatMessages()->where('role', 'user')->count();
+        $assistantMessages = $chatbot->chatMessages()->where('role', 'assistant')->count();
+
+        // Messages per day (last 30 days)
+        $messagesPerDay = $chatbot->chatMessages()
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->pluck('count', 'date')
+            ->toArray();
+
+        // Recent sessions with messages
+        $recentSessions = $chatbot->chatSessions()
+            ->with(['messages' => function($query) {
+                $query->orderBy('created_at', 'asc');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->take(20)
+            ->get();
+
+        // Top questions (most common user messages)
+        $topQuestions = $chatbot->chatMessages()
+            ->where('role', 'user')
+            ->selectRaw('content, COUNT(*) as count')
+            ->groupBy('content')
+            ->orderByDesc('count')
+            ->take(10)
+            ->get();
+
+        return Inertia::render('Chatbots/Analytics', [
+            'chatbot' => $chatbot,
+            'stats' => [
+                'totalSessions' => $totalSessions,
+                'totalMessages' => $totalMessages,
+                'userMessages' => $userMessages,
+                'assistantMessages' => $assistantMessages,
+                'avgMessagesPerSession' => $totalSessions > 0 ? round($totalMessages / $totalSessions, 1) : 0,
+            ],
+            'messagesPerDay' => $messagesPerDay,
+            'recentSessions' => $recentSessions,
+            'topQuestions' => $topQuestions,
+        ]);
+    }
 }

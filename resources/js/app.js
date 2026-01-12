@@ -15,6 +15,8 @@ const route = (name, params = {}) => {
         'chatbots.edit': (params) => typeof params === 'object' ? `/chatbots/${params.id || params}/edit` : `/chatbots/${params}/edit`,
         'chatbots.update': (params) => typeof params === 'object' ? `/chatbots/${params.id || params}` : `/chatbots/${params}`,
         'chatbots.destroy': (params) => typeof params === 'object' ? `/chatbots/${params.id || params}` : `/chatbots/${params}`,
+        'chatbots.analytics': (params) => typeof params === 'object' ? `/chatbots/${params.id || params}/analytics` : `/chatbots/${params}/analytics`,
+        'analytics.index': '/analytics',
         'widget.show': (params) => typeof params === 'object' ? `/widget/${params.uuid || params}` : `/widget/${params}`,
         'widget.send': (params) => typeof params === 'object' ? `/widget/${params.uuid || params}/send` : `/widget/${params}/send`,
         'widget.info': (params) => typeof params === 'object' ? `/widget/${params.uuid || params}/info` : `/widget/${params}/info`,

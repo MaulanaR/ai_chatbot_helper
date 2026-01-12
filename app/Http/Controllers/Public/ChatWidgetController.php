@@ -41,9 +41,29 @@ class ChatWidgetController extends Controller
     {
         $request->validate([
             'message' => 'required|string|max:1000',
+            'session_id' => 'nullable|string',
         ]);
 
         $chatbot = Chatbot::where('uuid', $uuid)->firstOrFail();
+
+        // Get or create chat session
+        $sessionId = $request->session_id ?? session()->getId();
+        $chatSession = \App\Models\ChatSession::firstOrCreate(
+            ['session_id' => $sessionId],
+            [
+                'chatbot_id' => $chatbot->id,
+                'visitor_ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]
+        );
+
+        // Save user message
+        \App\Models\ChatMessage::create([
+            'chat_session_id' => $chatSession->id,
+            'chatbot_id' => $chatbot->id,
+            'role' => 'user',
+            'content' => $request->message,
+        ]);
 
         // Get all knowledge base content for this chatbot
         $knowledgeBase = $chatbot->knowledgeBases()
@@ -59,9 +79,18 @@ class ChatWidgetController extends Controller
             $request->message
         );
 
+        // Save assistant response
+        \App\Models\ChatMessage::create([
+            'chat_session_id' => $chatSession->id,
+            'chatbot_id' => $chatbot->id,
+            'role' => 'assistant',
+            'content' => $response,
+        ]);
+
         return response()->json([
             'reply' => $response,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
+            'session_id' => $sessionId,
         ]);
     }
 

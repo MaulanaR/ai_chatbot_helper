@@ -39,6 +39,22 @@ class Chatbot extends Model
     }
 
     /**
+     * Get the chat sessions for the chatbot.
+     */
+    public function chatSessions()
+    {
+        return $this->hasMany(ChatSession::class);
+    }
+
+    /**
+     * Get all chat messages for the chatbot.
+     */
+    public function chatMessages()
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
+
+    /**
      * Boot the model.
      */
     protected static function boot()
