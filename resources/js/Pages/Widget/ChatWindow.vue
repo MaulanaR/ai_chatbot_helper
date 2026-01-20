@@ -1,7 +1,7 @@
 <script setup>
 import WidgetLayout from '@/Layouts/WidgetLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { ref, onMounted, inject, computed } from 'vue';
+import { ref, onMounted, inject, computed, nextTick } from 'vue';
 import MarkdownIt from 'markdown-it';
 
 const md = new MarkdownIt({
@@ -71,6 +71,7 @@ const sendMessage = async () => {
         };
 
         messages.value.push(botMessage);
+        scrollToBottom();
     } catch (error) {
         console.error('Error sending message:', error);
         const errorMessage = {
@@ -80,10 +81,13 @@ const sendMessage = async () => {
             timestamp: new Date().toISOString()
         };
         messages.value.push(errorMessage);
+        
     } finally {
         isLoading.value = false;
         scrollToBottom();
-        messageInput.value.focus();
+        nextTick(() => {
+            messageInput.value?.focus();
+        });
     }
 };
 
